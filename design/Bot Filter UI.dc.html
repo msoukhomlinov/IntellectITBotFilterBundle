@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+body{margin:0;background:#e8e8e8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#4e5e9e;text-decoration:none;}
+a:hover{color:#3d4a7d;text-decoration:underline;}
+table{border-collapse:collapse;width:100%;}
+</style>
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#4e5e9e"/><circle cx="50" cy="50" r="22" fill="none" stroke="#fff" stroke-width="7"/><rect x="20" y="46.5" width="60" height="7" fill="#fff" transform="rotate(-45 50 50)"/></svg></template>
+
+<div style="display:flex;flex-direction:column;gap:56px;padding:48px 40px 96px;">
+
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:920px;">
+    <div style="font-size:12px;letter-spacing:.32px;color:#6f6f6f;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;">ISSUE #4 · CLAUDE DESIGN PASS · BOTFILTER UI OVERHAUL</div>
+    <div style="font-size:32px;line-height:40px;color:#161616;">One design language across all four surfaces</div>
+    <div style="font-size:16px;line-height:24px;color:#525252;text-wrap:pretty;">Mautic 7 core chrome only — Carbon tokens, 0px radius, <span style="font-family:ui-monospace,monospace;font-size:14px;">ri-</span> icons, core's own <span style="font-family:ui-monospace,monospace;font-size:14px;">list_toolbar</span> / <span style="font-family:ui-monospace,monospace;font-size:14px;">tableheader</span> / <span style="font-family:ui-monospace,monospace;font-size:14px;">pagination</span> includes. Six frames: list, drill-down, dashboard widgets, settings modal, empty states, plugin icon. Written up in <span style="font-family:ui-monospace,monospace;font-size:14px;">docs/ui-spec.md</span>.</div>
+  </div>
+
+  <!-- 01 LIST -->
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div style="font-size:12px;letter-spacing:.32px;color:#6f6f6f;font-family:ui-monospace,monospace;">01 · /s/botfilter/{page} — affected contacts</div>
+    <div style="display:flex;width:1440px;box-shadow:0 1px 3px rgba(0,0,0,.14);background:#f4f4f4;">
+
+      <div style="width:230px;flex:none;background:#1f262e;display:flex;flex-direction:column;padding:0 0 24px;">
+        <div style="height:48px;display:flex;align-items:center;gap:10px;padding:0 16px;background:#4e5e9e;color:#fff;font-size:14px;font-weight:600;letter-spacing:.16px;"><i class="ri-plant-line" style="font-size:18px;"></i>Mautic</div>
+        <div style="display:flex;flex-direction:column;padding-top:8px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;color:#a8a8a8;font-size:14px;"><i class="ri-dashboard-line" style="font-size:16px;"></i>Dashboard</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;color:#a8a8a8;font-size:14px;"><i class="ri-user-3-line" style="font-size:16px;"></i>Contacts</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;color:#c6c6c6;font-size:14px;"><i class="ri-broadcast-line" style="font-size:16px;"></i>Channels</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px 10px 44px;color:#a8a8a8;font-size:14px;">Emails</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px 10px 44px;color:#a8a8a8;font-size:14px;">Focus items</div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 16px 10px 44px;color:#fff;font-size:14px;font-weight:600;background:#2c353f;border-left:3px solid #4e5e9e;margin-left:-3px;">Bot Filter</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;color:#a8a8a8;font-size:14px;"><i class="ri-megaphone-line" style="font-size:16px;"></i>Campaigns</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;color:#a8a8a8;font-size:14px;"><i class="ri-settings-3-line" style="font-size:16px;"></i>Settings</div>
+        </div>
+      </div>
+
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+        <div style="height:48px;background:#fff;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;justify-content:flex-end;gap:16px;padding:0 24px;color:#525252;font-size:16px;">
+          <i class="ri-search-line"></i><i class="ri-notification-3-line"></i><i class="ri-question-line"></i>
+          <div style="width:24px;height:24px;background:#4e5e9e;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;">MS</div>
+        </div>
+
+        <div style="padding:24px;display:flex;flex-direction:column;gap:16px;">
+
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="font-size:20px;line-height:28px;color:#161616;">Bot Filter</div>
+              <div style="font-size:14px;line-height:18px;color:#525252;">Engagement discarded as cloud link-scanner traffic, by contact.</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#e0e0e0;border:1px solid #e0e0e0;">
+            <sc-for list="{{ health }}" as="t" hint-placeholder-count="4">
+              <div style="background:#fff;padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <div style="font-size:12px;letter-spacing:.32px;color:#6f6f6f;">{{ t.label }}</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="width:8px;height:8px;border-radius:50%;background:{{ t.dot }};"></span>
+                  <span style="font-size:20px;line-height:28px;color:#161616;">{{ t.value }}</span>
+                </div>
+                <div style="font-size:12px;line-height:16px;color:#6f6f6f;">{{ t.meta }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;">
+
+            <div style="background:#fff;border:1px solid #e0e0e0;display:flex;flex-direction:column;">
+
+              <div style="height:48px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;padding-right:8px;">
+                <div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;color:#525252;font-size:18px;"><i class="ri-search-line"></i></div>
+                <input type="search" placeholder="Search…" value="" style="flex:1;height:46px;border:0;outline:none;font-size:14px;color:#161616;background:transparent;font-family:inherit;">
+                <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:#525252;font-size:18px;"><i class="ri-filter-line"></i></div>
+              </div>
+
+              <div class="page-list" style="display:flex;flex-direction:column;">
+                <table>
+                  <thead>
+                    <tr style="border-bottom:1px solid #e0e0e0;">
+                      <th style="padding:0;text-align:left;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;cursor:pointer;" style-hover="background:#f1f1f1;">Contact<i class="ri-arrow-up-down-line" style="font-size:16px;font-weight:400;color:#8d8d8d;"></i></div>
+                      </th>
+                      <th style="padding:0;width:110px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;cursor:pointer;background:#f1f1f1;">Hits<i class="ri-arrow-down-line" style="font-size:16px;font-weight:400;color:#161616;"></i></div>
+                      </th>
+                      <th style="padding:0;width:110px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;cursor:pointer;" style-hover="background:#f1f1f1;">IPs<i class="ri-arrow-up-down-line" style="font-size:16px;font-weight:400;color:#8d8d8d;"></i></div>
+                      </th>
+                      <th style="padding:0;width:230px;">
+                        <div style="padding:12px 16px;font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;">Reasons</div>
+                      </th>
+                      <th style="padding:0;width:170px;">
+                        <div style="padding:12px 16px;font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;">Scanner</div>
+                      </th>
+                      <th style="padding:0;width:190px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;cursor:pointer;" style-hover="background:#f1f1f1;">Last seen<i class="ri-arrow-up-down-line" style="font-size:16px;font-weight:400;color:#8d8d8d;"></i></div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ contacts }}" as="c" hint-placeholder-count="7">
+                      <tr style="cursor:pointer;" style-hover="background:#f1f1f1;">
+                        <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;">
+                          <div style="display:flex;flex-direction:column;gap:2px;">
+                            <span style="font-size:14px;line-height:18px;color:#4e5e9e;font-weight:600;">{{ c.name }}</span>
+                            <span style="font-size:12px;line-height:16px;color:#6f6f6f;">{{ c.email }}</span>
+                          </div>
+                        </td>
+                        <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-size:14px;color:#161616;font-variant-numeric:tabular-nums;">{{ c.hits }}</td>
+                        <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-size:14px;color:#161616;font-variant-numeric:tabular-nums;">{{ c.ips }}</td>
+                        <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;">
+                          <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                            <sc-for list="{{ c.reasons }}" as="r" hint-placeholder-count="2">
+                              <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;font-size:12px;letter-spacing:.32px;background:{{ r.bg }};color:{{ r.fg }};">{{ r.label }}</span>
+                            </sc-for>
+                          </div>
+                        </td>
+                        <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-size:12px;color:#525252;">{{ c.provider }}</td>
+                        <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-size:12px;color:#525252;">{{ c.last }}</td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:16px;">
+                  <div style="width:120px;"></div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                    <div style="display:flex;">
+                      <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;color:#c6c6c6;"><i class="ri-arrow-left-double-line"></i></div>
+                      <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#c6c6c6;"><i class="ri-arrow-left-s-line"></i></div>
+                      <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #4e5e9e;border-left:0;background:#4e5e9e;color:#fff;font-size:13px;">1</div>
+                      <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;font-size:13px;">2</div>
+                      <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;font-size:13px;">3</div>
+                      <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;"><i class="ri-arrow-right-s-line"></i></div>
+                      <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;"><i class="ri-arrow-right-double-line"></i></div>
+                    </div>
+                    <div style="font-size:12px;color:#6f6f6f;">42 items, 3 pages total</div>
+                  </div>
+                  <div style="width:120px;display:flex;justify-content:flex-end;">
+                    <div style="height:34px;min-width:72px;border:1px solid #8d8d8d;background:#f4f4f4;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 10px;font-size:13px;color:#161616;">15<i class="ri-arrow-down-s-line" style="color:#525252;"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <div style="background:#fff;border:1px solid #e0e0e0;">
+                <div style="padding:12px 16px;border-bottom:1px solid #e0e0e0;font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;">Scanners hitting you</div>
+                <div style="padding:16px;display:flex;flex-direction:column;gap:14px;">
+                  <sc-for list="{{ providers }}" as="p" hint-placeholder-count="5">
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
+                        <span style="font-size:14px;line-height:18px;color:#161616;">{{ p.name }}</span>
+                        <span style="font-size:12px;color:#6f6f6f;font-variant-numeric:tabular-nums;">{{ p.hits }}</span>
+                      </div>
+                      <div style="height:6px;background:#e0e0e0;">
+                        <div style="height:6px;background:#4e5e9e;width:{{ p.pct }};"></div>
+                      </div>
+                      <div style="font-size:12px;color:#6f6f6f;">{{ p.meta }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="background:#edf5ff;border-left:3px solid #0043ce;padding:12px;display:flex;gap:10px;">
+                <i class="ri-information-line" style="color:#0043ce;font-size:16px;"></i>
+                <div style="font-size:12px;line-height:16px;color:#161616;text-wrap:pretty;">Only hits that reach this plugin are recorded. Traffic core drops earlier — UA blocklist, device detector, HEAD requests — never appears here.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 DRILL-DOWN -->
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div style="font-size:12px;letter-spacing:.32px;color:#6f6f6f;font-family:ui-monospace,monospace;">02 · /s/botfilter/contact/{leadId}/{page} — drill-down</div>
+    <div style="width:1440px;background:#f4f4f4;box-shadow:0 1px 3px rgba(0,0,0,.14);padding:24px;display:flex;flex-direction:column;gap:16px;">
+
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#6f6f6f;">
+        <span style="color:#4e5e9e;cursor:pointer;">Bot Filter</span><i class="ri-arrow-right-s-line"></i><span>Priya Raman</span>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e0e0e0;padding:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;">
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:48px;height:48px;background:#e8daff;color:#6929c4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;">PR</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="font-size:20px;line-height:28px;color:#161616;">Priya Raman</div>
+            <div style="font-size:14px;line-height:18px;color:#525252;">priya.raman@northbridge.com.au</div>
+            <div style="display:flex;gap:8px;margin-top:4px;">
+              <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;font-size:12px;background:#e8daff;color:#6929c4;">Behind Mimecast</span>
+              <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;font-size:12px;background:#9EF0E5;color:#005C59;">Honeypot confirmed</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:32px;align-items:flex-start;">
+          <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#6f6f6f;">Hits filtered</span><span style="font-size:28px;line-height:36px;color:#161616;">211</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#6f6f6f;">Distinct IPs</span><span style="font-size:28px;line-height:36px;color:#161616;">27</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#6f6f6f;">Last seen</span><span style="font-size:14px;line-height:36px;color:#161616;">1 Sep 2026, 09:14</span></div>
+          <button style="height:34px;padding:0 12px;background:#fff;border:1px solid #4e5e9e;color:#4e5e9e;font-size:14px;display:flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;"><i class="ri-external-link-line"></i>Contact record</button>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e0e0e0;">
+        <div style="height:48px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;padding-right:8px;">
+          <div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;color:#525252;font-size:18px;"><i class="ri-search-line"></i></div>
+          <input type="search" placeholder="Search IP or URL…" style="flex:1;height:46px;border:0;outline:none;font-size:14px;color:#161616;background:transparent;font-family:inherit;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:190px;height:34px;border:1px solid #8d8d8d;background:#f4f4f4;padding:0 10px;font-size:13px;color:#161616;">All reasons<i class="ri-arrow-down-s-line" style="color:#525252;"></i></div>
+          <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:#525252;font-size:18px;"><i class="ri-filter-line"></i></div>
+        </div>
+
+        <table>
+          <thead>
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <th style="padding:0;width:190px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;font-size:14px;font-weight:600;color:#161616;background:#f1f1f1;">Date<i class="ri-arrow-down-line" style="font-size:16px;font-weight:400;"></i></div></th>
+              <th style="padding:0;width:150px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;font-size:14px;font-weight:600;color:#161616;">IP<i class="ri-arrow-up-down-line" style="font-size:16px;font-weight:400;color:#8d8d8d;"></i></div></th>
+              <th style="padding:0;width:170px;"><div style="padding:12px 16px;font-size:14px;font-weight:600;color:#161616;">Reason</div></th>
+              <th style="padding:0;width:180px;"><div style="padding:12px 16px;font-size:14px;font-weight:600;color:#161616;">Location</div></th>
+              <th style="padding:0;"><div style="padding:12px 16px;font-size:14px;font-weight:600;color:#161616;">Organisation</div></th>
+              <th style="padding:0;width:300px;"><div style="padding:12px 16px;font-size:14px;font-weight:600;color:#161616;">URL</div></th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ hits }}" as="h" hint-placeholder-count="8">
+              <tr style-hover="background:#f1f1f1;">
+                <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-size:14px;color:#161616;font-variant-numeric:tabular-nums;">{{ h.date }}</td>
+                <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-size:13px;color:#161616;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;">{{ h.ip }}</td>
+                <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;">
+                  <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;font-size:12px;letter-spacing:.32px;background:{{ h.bg }};color:{{ h.fg }};">{{ h.reason }}</span>
+                </td>
+                <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-size:14px;color:#525252;">{{ h.location }}</td>
+                <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;">
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:14px;color:#161616;">{{ h.org }}</span>
+                    <sc-if value="{{ h.dc }}" hint-placeholder-val="{{ true }}">
+                      <span style="display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;font-size:12px;background:#fcf4d6;color:#684e00;border:1px solid #f1c21b;"><i class="ri-server-line" style="font-size:12px;"></i>Datacenter</span>
+                    </sc-if>
+                  </div>
+                  <div style="font-size:12px;color:#6f6f6f;">{{ h.asn }}</div>
+                </td>
+                <td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-size:12px;color:#6f6f6f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px;">{{ h.url }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:16px;">
+          <div style="width:120px;"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div style="display:flex;">
+              <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;color:#c6c6c6;"><i class="ri-arrow-left-double-line"></i></div>
+              <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#c6c6c6;"><i class="ri-arrow-left-s-line"></i></div>
+              <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #4e5e9e;border-left:0;background:#4e5e9e;color:#fff;font-size:13px;">1</div>
+              <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;font-size:13px;">2</div>
+              <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;font-size:13px;">3</div>
+              <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;font-size:13px;">4</div>
+              <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;"><i class="ri-arrow-right-s-line"></i></div>
+              <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-left:0;color:#4e5e9e;"><i class="ri-arrow-right-double-line"></i></div>
+            </div>
+            <div style="font-size:12px;color:#6f6f6f;">211 items, 15 pages total</div>
+          </div>
+          <div style="width:120px;display:flex;justify-content:flex-end;">
+            <div style="height:34px;min-width:72px;border:1px solid #8d8d8d;background:#f4f4f4;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 10px;font-size:13px;color:#161616;">15<i class="ri-arrow-down-s-line" style="color:#525252;"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 WIDGETS -->
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div style="font-size:12px;letter-spacing:.32px;color:#6f6f6f;font-family:ui-monospace,monospace;">03 · Dashboard widgets — inner content only (core draws the tile, header and actions)</div>
+    <div style="width:1440px;background:#f4f4f4;box-shadow:0 1px 3px rgba(0,0,0,.14);padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="background:#fff;border:1px solid #e0e0e0;">
+          <div style="height:44px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#fafafa;">
+            <span style="font-size:14px;font-weight:600;color:#161616;">Bot hits filtered</span>
+            <i class="ri-more-2-line" style="color:#8d8d8d;"></i>
+          </div>
+          <div style="padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div style="font-size:42px;line-height:50px;font-weight:300;color:#161616;font-variant-numeric:tabular-nums;">1,284</div>
+            <div style="font-size:12px;color:#6f6f6f;">last 30 days</div>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e0e0e0;">
+          <div style="height:44px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#fafafa;">
+            <span style="font-size:14px;font-weight:600;color:#161616;">Contacts affected</span>
+            <i class="ri-more-2-line" style="color:#8d8d8d;"></i>
+          </div>
+          <div style="padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div style="font-size:42px;line-height:50px;font-weight:300;color:#161616;font-variant-numeric:tabular-nums;">42</div>
+            <div style="font-size:12px;color:#6f6f6f;">last 30 days · contacts you own</div>
+          </div>
+        </div>
+
+        <div style="grid-column:1 / -1;background:#defbe6;border-left:3px solid #24a148;padding:12px;display:flex;gap:10px;">
+          <i class="ri-shield-user-line" style="color:#0e6027;font-size:16px;"></i>
+          <div style="font-size:12px;line-height:16px;color:#161616;text-wrap:pretty;">Both number tiles drop the inner duplicate label — core already draws the widget title. Counts are ownership-clamped, matching the admin pages.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="background:#fff;border:1px solid #e0e0e0;">
+          <div style="height:44px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#fafafa;">
+            <span style="font-size:14px;font-weight:600;color:#161616;">Daily breakdown</span>
+            <i class="ri-more-2-line" style="color:#8d8d8d;"></i>
+          </div>
+          <table>
+            <thead>
+              <tr style="border-bottom:1px solid #e0e0e0;">
+                <th style="text-align:left;padding:8px 12px;font-size:12px;letter-spacing:.32px;font-weight:600;color:#525252;">Date</th>
+                <th style="text-align:left;padding:8px 12px;font-size:12px;letter-spacing:.32px;font-weight:600;color:#525252;">Reason</th>
+                <th style="text-align:right;padding:8px 12px;font-size:12px;letter-spacing:.32px;font-weight:600;color:#525252;width:70px;">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ daily }}" as="d" hint-placeholder-count="4">
+                <tr>
+                  <td style="padding:8px 12px;border-bottom:1px solid #e0e0e0;font-size:14px;color:#161616;font-variant-numeric:tabular-nums;">{{ d.day }}</td>
+                  <td style="padding:8px 12px;border-bottom:1px solid #e0e0e0;"><span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;font-size:12px;background:{{ d.bg }};color:{{ d.fg }};">{{ d.reason }}</span></td>
+                  <td style="padding:8px 12px;border-bottom:1px solid #e0e0e0;text-align:right;font-size:14px;color:#161616;font-variant-numeric:tabular-nums;">{{ d.count }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e0e0e0;">
+          <div style="height:44px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#fafafa;">
+            <span style="font-size:14px;font-weight:600;color:#161616;">Top contacts affected</span>
+            <i class="ri-more-2-line" style="color:#8d8d8d;"></i>
+          </div>
+          <table>
+            <thead>
+              <tr style="border-bottom:1px solid #e0e0e0;">
+                <th style="text-align:left;padding:8px 12px;font-size:12px;letter-spacing:.32px;font-weight:600;color:#525252;">Contact</th>
+                <th style="text-align:right;padding:8px 12px;font-size:12px;letter-spacing:.32px;font-weight:600;color:#525252;width:70px;">Hits</th>
+                <th style="text-align:left;padding:8px 12px;font-size:12px;letter-spacing:.32px;font-weight:600;color:#525252;width:150px;">Last seen</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ topContacts }}" as="t" hint-placeholder-count="4">
+                <tr>
+                  <td style="padding:8px 12px;border-bottom:1px solid #e0e0e0;font-size:14px;color:#4e5e9e;">{{ t.name }}</td>
+                  <td style="padding:8px 12px;border-bottom:1px solid #e0e0e0;text-align:right;font-size:14px;color:#161616;font-variant-numeric:tabular-nums;">{{ t.hits }}</td>
+                  <td style="padding:8px 12px;border-bottom:1px solid #e0e0e0;font-size:12px;color:#525252;">{{ t.last }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 SETTINGS MODAL -->
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div style="font-size:12px;letter-spacing:.32px;color:#6f6f6f;font-family:ui-monospace,monospace;">04 · Settings → Plugins → Bot Filter — tabbed modal (PluginController::editAction), all three tab states</div>
+    <div style="background:rgba(22,22,22,.55);padding:40px;display:flex;gap:24px;align-items:flex-start;box-shadow:0 1px 3px rgba(0,0,0,.14);">
+      <div style="width:760px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;flex-direction:column;">
+
+        <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #e0e0e0;">
+          <div style="width:32px;height:32px;background:#4e5e9e;display:flex;align-items:center;justify-content:center;flex:none;">
+            <div style="width:16px;height:16px;border:2px solid #fff;border-radius:50%;position:relative;">
+              <div style="position:absolute;top:5px;left:-3px;width:18px;height:2px;background:#fff;transform:rotate(-45deg);"></div>
+            </div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+            <div style="font-size:16px;line-height:22px;font-weight:600;color:#161616;">Bot Filter</div>
+            <div style="font-size:12px;line-height:16px;color:#6f6f6f;">IntellectIT · v1.5.4</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:14px;color:#161616;">Published</span>
+            <div style="width:48px;height:24px;background:#24a148;position:relative;cursor:pointer;"><div style="position:absolute;top:3px;left:27px;width:18px;height:18px;background:#fff;"></div></div>
+          </div>
+          <i class="ri-close-line" style="font-size:20px;color:#525252;margin-left:8px;cursor:pointer;"></i>
+        </div>
+
+        <div style="display:flex;border-bottom:1px solid #e0e0e0;padding:0 16px;gap:0;">
+          <div style="padding:12px 16px;font-size:14px;font-weight:600;color:#161616;border-bottom:2px solid #4e5e9e;">Detection</div>
+          <div style="padding:12px 16px;font-size:14px;color:#525252;">Honeypot</div>
+          <div style="padding:12px 16px;font-size:14px;color:#525252;">Diagnostics</div>
+        </div>
+
+        <div style="padding:16px;display:flex;flex-direction:column;gap:16px;">
+
+          <div style="background:#defbe6;border-left:3px solid #24a148;padding:12px 16px;display:flex;gap:12px;">
+            <i class="ri-checkbox-circle-line" style="color:#0e6027;font-size:18px;"></i>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;">Protection is on</div>
+              <div style="font-size:12px;line-height:16px;color:#161616;text-wrap:pretty;">The burst signal runs on email opens and clicks with the thresholds below, plus the honeypot. <strong>Unpublish</strong> and the plugin becomes transparent: standard Mautic only — core's weaker time-from-send and IP/UA blocklist signals, no burst detection, no honeypot, no capture rows.</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <label style="font-size:12px;letter-spacing:.32px;color:#525252;">Distinct IPs to flag a burst</label>
+              <div style="height:40px;background:#f4f4f4;border-bottom:1px solid #8d8d8d;display:flex;align-items:center;padding:0 12px;font-size:14px;color:#161616;">{{ burstIps }}</div>
+              <span style="font-size:12px;color:#6f6f6f;">Minimum 2. Lower catches more, risks flagging desktop + mobile.</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <label style="font-size:12px;letter-spacing:.32px;color:#525252;">Burst window (seconds)</label>
+              <div style="height:40px;background:#f4f4f4;border-bottom:1px solid #8d8d8d;display:flex;align-items:center;padding:0 12px;font-size:14px;color:#161616;">{{ burstWindow }}</div>
+              <span style="font-size:12px;color:#6f6f6f;">How long those IPs are counted over.</span>
+            </div>
+          </div>
+
+          <div style="background:#f4f4f4;border:1px dashed #c6c6c6;padding:12px 16px;display:flex;align-items:center;gap:10px;">
+            <i class="ri-focus-2-line" style="color:#4e5e9e;font-size:16px;"></i>
+            <div style="font-size:14px;line-height:18px;color:#161616;">{{ ruleSentence }}</div>
+          </div>
+
+        </div>
+
+        <div style="padding:12px 16px;border-top:1px solid #e0e0e0;display:flex;justify-content:flex-end;gap:8px;background:#f4f4f4;">
+          <button style="height:40px;padding:0 16px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:14px;cursor:pointer;font-family:inherit;">Cancel</button>
+          <button style="height:40px;padding:0 16px;background:#4e5e9e;border:1px solid #4e5e9e;color:#fff;font-size:14px;cursor:pointer;font-family:inherit;" style-hover="background:#3d4a7d;">Save &amp; close</button>
+        </div>
+      </div>
+
+      <div style="width:760px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #e0e0e0;">
+          <div style="width:32px;height:32px;background:#4e5e9e;display:flex;align-items:center;justify-content:center;flex:none;">
+            <div style="width:16px;height:16px;border:2px solid #fff;border-radius:50%;position:relative;">
+              <div style="position:absolute;top:5px;left:-3px;width:18px;height:2px;background:#fff;transform:rotate(-45deg);"></div>
+            </div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+            <div style="font-size:16px;line-height:22px;font-weight:600;color:#161616;">Bot Filter</div>
+            <div style="font-size:12px;line-height:16px;color:#6f6f6f;">IntellectIT · v1.5.4</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:14px;color:#161616;">Published</span>
+            <div style="width:48px;height:24px;background:#24a148;position:relative;cursor:pointer;"><div style="position:absolute;top:3px;left:27px;width:18px;height:18px;background:#fff;"></div></div>
+          </div>
+          <i class="ri-close-line" style="font-size:20px;color:#525252;margin-left:8px;cursor:pointer;"></i>
+        </div>
+
+        <div style="display:flex;border-bottom:1px solid #e0e0e0;padding:0 16px;">
+          <div style="padding:12px 16px;font-size:14px;color:#525252;">Detection</div>
+          <div style="padding:12px 16px;font-size:14px;font-weight:600;color:#161616;border-bottom:2px solid #4e5e9e;">Honeypot</div>
+          <div style="padding:12px 16px;font-size:14px;color:#525252;">Diagnostics</div>
+        </div>
+
+        <div style="padding:16px;display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="font-size:14px;font-weight:600;letter-spacing:.16px;color:#161616;">Honeypot link</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <div style="width:16px;height:16px;background:#161616;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:2px;flex:none;"><i class="ri-check-line" style="font-size:12px;"></i></div>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font-size:14px;line-height:18px;color:#161616;">Inject a hidden, non-trackable link into sends</span>
+                <span style="font-size:12px;line-height:16px;color:#6f6f6f;">A gateway that pre-fetches links hits it and is recorded as <span style="font-family:ui-monospace,monospace;">honeypot</span> — a deterministic per-contact "behind a scanner" signal. The route always returns 204.</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <label style="font-size:12px;letter-spacing:.32px;color:#525252;">Email ID allowlist</label>
+              <div style="height:40px;background:#f4f4f4;border-bottom:1px solid #8d8d8d;display:flex;align-items:center;padding:0 12px;font-size:14px;color:#161616;">12, 18, 31</div>
+              <span style="font-size:12px;color:#6f6f6f;">Comma-separated. Leave blank to honeypot every email.</span>
+            </div>
+            <div style="background:#fcf4d6;border-left:3px solid #f1c21b;padding:12px;display:flex;gap:10px;">
+              <i class="ri-alert-line" style="color:#684e00;font-size:16px;"></i>
+              <div style="font-size:12px;line-height:16px;color:#161616;text-wrap:pretty;">Send a seed test and confirm rendering and deliverability before enabling this broadly — a hidden link changes message content.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="padding:12px 16px;border-top:1px solid #e0e0e0;display:flex;justify-content:flex-end;gap:8px;background:#f4f4f4;">
+          <button style="height:40px;padding:0 16px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:14px;cursor:pointer;font-family:inherit;">Cancel</button>
+          <button style="height:40px;padding:0 16px;background:#4e5e9e;border:1px solid #4e5e9e;color:#fff;font-size:14px;cursor:pointer;font-family:inherit;" style-hover="background:#3d4a7d;">Save &amp; close</button>
+        </div>
+      </div>
+
+      <div style="width:760px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #e0e0e0;">
+          <div style="width:32px;height:32px;background:#4e5e9e;display:flex;align-items:center;justify-content:center;flex:none;">
+            <div style="width:16px;height:16px;border:2px solid #fff;border-radius:50%;position:relative;">
+              <div style="position:absolute;top:5px;left:-3px;width:18px;height:2px;background:#fff;transform:rotate(-45deg);"></div>
+            </div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+            <div style="font-size:16px;line-height:22px;font-weight:600;color:#161616;">Bot Filter</div>
+            <div style="font-size:12px;line-height:16px;color:#6f6f6f;">IntellectIT · v1.5.4</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:14px;color:#161616;">Published</span>
+            <div style="width:48px;height:24px;background:#24a148;position:relative;cursor:pointer;"><div style="position:absolute;top:3px;left:27px;width:18px;height:18px;background:#fff;"></div></div>
+          </div>
+          <i class="ri-close-line" style="font-size:20px;color:#525252;margin-left:8px;cursor:pointer;"></i>
+        </div>
+
+        <div style="display:flex;border-bottom:1px solid #e0e0e0;padding:0 16px;">
+          <div style="padding:12px 16px;font-size:14px;color:#525252;">Detection</div>
+          <div style="padding:12px 16px;font-size:14px;color:#525252;">Honeypot</div>
+          <div style="padding:12px 16px;font-size:14px;font-weight:600;color:#161616;border-bottom:2px solid #4e5e9e;">Diagnostics</div>
+        </div>
+
+        <div style="padding:16px;display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:12px;line-height:16px;color:#6f6f6f;text-wrap:pretty;">Read-only. Answers "did the install command run, and is the ASN data current?" without SSH.</div>
+            <div style="border:1px solid #e0e0e0;display:flex;flex-direction:column;">
+              <sc-for list="{{ status }}" as="s" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #e0e0e0;">
+                  <i class="{{ s.icon }}" style="font-size:16px;color:{{ s.color }};"></i>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+                    <span style="font-size:14px;line-height:18px;color:#161616;">{{ s.label }}</span>
+                    <span style="font-size:12px;line-height:16px;color:#6f6f6f;font-family:ui-monospace,monospace;">{{ s.detail }}</span>
+                  </div>
+                  <span style="font-size:12px;color:#525252;">{{ s.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:12px 16px;border-top:1px solid #e0e0e0;display:flex;justify-content:flex-end;gap:8px;background:#f4f4f4;">
+          <button style="height:40px;padding:0 16px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:14px;cursor:pointer;font-family:inherit;">Cancel</button>
+          <button style="height:40px;padding:0 16px;background:#4e5e9e;border:1px solid #4e5e9e;color:#fff;font-size:14px;cursor:pointer;font-family:inherit;" style-hover="background:#3d4a7d;">Save &amp; close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 EMPTY STATES + ICON -->
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div style="font-size:12px;letter-spacing:.32px;color:#6f6f6f;font-family:ui-monospace,monospace;">05 · Empty states &amp; plugin icon</div>
+    <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+
+      <div style="width:640px;background:#f4f4f4;box-shadow:0 1px 3px rgba(0,0,0,.14);padding:24px;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-size:12px;color:#6f6f6f;">A · Nothing captured yet — custom panel, reassuring</div>
+        <div style="background:#fff;border:1px solid #e0e0e0;padding:56px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+          <i class="ri-radar-line" style="font-size:32px;color:#8d8d8d;"></i>
+          <div style="font-size:20px;line-height:28px;color:#161616;">No scanners caught yet</div>
+          <div style="font-size:14px;line-height:20px;color:#525252;max-width:420px;text-wrap:pretty;">That's normal — the filter is watching every open and click. Contacts appear here the first time a burst of link-scanner traffic is discarded.</div>
+        </div>
+      </div>
+
+      <div style="width:640px;background:#f4f4f4;box-shadow:0 1px 3px rgba(0,0,0,.14);padding:24px;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-size:12px;color:#6f6f6f;">B · Search returned nothing — core <span style="font-family:ui-monospace,monospace;">noresults.html.twig</span></div>
+        <div style="background:#fff;border:1px solid #e0e0e0;padding:24px;display:flex;justify-content:center;">
+          <div style="width:420px;background:#fcf4d6;border:1px solid #f1c21b;padding:16px;display:flex;flex-direction:column;gap:6px;">
+            <div style="font-size:16px;font-weight:600;color:#161616;">No results found</div>
+            <div style="font-size:14px;line-height:20px;color:#161616;">Try broadening your search, or clear it to see all affected contacts.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="width:640px;background:#f4f4f4;box-shadow:0 1px 3px rgba(0,0,0,.14);padding:24px;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-size:12px;color:#6f6f6f;">C · Plugin icon — <span style="font-family:ui-monospace,monospace;">Assets/img/icon.png</span>, flat geometry, brand #4e5e9e</div>
+        <div style="display:flex;align-items:flex-end;gap:24px;background:#fff;border:1px solid #e0e0e0;padding:24px;">
+          <div style="width:128px;height:128px;background:#4e5e9e;display:flex;align-items:center;justify-content:center;flex:none;">
+            <div style="width:64px;height:64px;border:8px solid #fff;border-radius:50%;position:relative;">
+              <div style="position:absolute;top:20px;left:-12px;width:72px;height:8px;background:#fff;transform:rotate(-45deg);"></div>
+            </div>
+          </div>
+          <div style="width:64px;height:64px;background:#4e5e9e;display:flex;align-items:center;justify-content:center;flex:none;">
+            <div style="width:32px;height:32px;border:4px solid #fff;border-radius:50%;position:relative;">
+              <div style="position:absolute;top:10px;left:-6px;width:36px;height:4px;background:#fff;transform:rotate(-45deg);"></div>
+            </div>
+          </div>
+          <div style="width:32px;height:32px;background:#4e5e9e;display:flex;align-items:center;justify-content:center;flex:none;">
+            <div style="width:16px;height:16px;border:2px solid #fff;border-radius:50%;position:relative;">
+              <div style="position:absolute;top:5px;left:-3px;width:18px;height:2px;background:#fff;transform:rotate(-45deg);"></div>
+            </div>
+          </div>
+          <div style="font-size:12px;line-height:16px;color:#6f6f6f;text-wrap:pretty;">Blocked-circle mark: legible at 32px in the plugins grid, no text, no gradient. Needs exporting to PNG at 128/256px.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;burstIps&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:2,&quot;max&quot;:10,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Burst detection&quot;},&quot;burstWindow&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:30,&quot;min&quot;:5,&quot;max&quot;:300,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Burst detection&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const R = {
+      open:  { label: 'Open burst',   bg: '#e8daff', fg: '#6929c4' },
+      click: { label: 'Click burst',  bg: '#d0e2ff', fg: '#0043ce' },
+      core:  { label: 'Core signals', bg: '#e0e0e0', fg: '#161616' },
+      honey: { label: 'Honeypot',     bg: '#9EF0E5', fg: '#005C59' },
+    };
+    const ips = this.props.burstIps ?? 3;
+    const win = this.props.burstWindow ?? 30;
+
+    const health = [
+      { label: 'Protection', value: 'Active', dot: '#24a148', meta: 'Burst signal on opens + clicks' },
+      { label: 'Honeypot', value: 'On', dot: '#24a148', meta: '3 emails allowlisted' },
+      { label: 'ASN database', value: '9 days old', dot: '#f1c21b', meta: 'GeoLite2-ASN · updated 22 Aug' },
+      { label: 'Last capture', value: '2 hours ago', dot: 'transparent', meta: '1,284 hits filtered in 30 days' },
+    ];
+
+    const contacts = [
+      ['Priya Raman', 'priya.raman@northbridge.com.au', 211, 27, [R.click, R.open, R.honey], 'Mimecast', '1 Sep 2026, 09:14'],
+      ['Daniel Okafor', 'd.okafor@harbourlaw.com', 96, 19, [R.click, R.open], 'Microsoft ATP', '1 Sep 2026, 06:02'],
+      ['Elise Fontaine', 'elise@meridian-group.fr', 74, 22, [R.click, R.honey], 'Proofpoint', '31 Aug 2026, 16:02'],
+      ['Tom Whitlock', 'tom.whitlock@cavendish.co.uk', 61, 14, [R.open], 'Barracuda', '31 Aug 2026, 09:41'],
+      ['Sarah Nguyen', 's.nguyen@apexmedical.com.au', 44, 11, [R.click, R.core], 'Microsoft ATP', '28 Aug 2026, 14:20'],
+      ['Marcus Bell', 'marcus.bell@stonegate.io', 31, 9, [R.click], 'Amazon AWS', '27 Aug 2026, 11:07'],
+      ['Anita Desai', 'anita.desai@kelmore.com', 18, 6, [R.honey], 'Mimecast', '26 Aug 2026, 08:55'],
+    ].map(([name, email, hits, ipc, reasons, provider, last]) => ({ name, email, hits, ips: ipc, reasons, provider, last }));
+
+    const providers = [
+      ['Mimecast', 412, '100%', '9 contacts · AS 12046'],
+      ['Microsoft Defender ATP', 338, '82%', '11 contacts · AS 8075'],
+      ['Proofpoint URL Defense', 214, '52%', '6 contacts · AS 22843'],
+      ['Barracuda Networks', 156, '38%', '4 contacts · AS 15224'],
+      ['Amazon AWS (unclassified)', 89, '22%', '3 contacts · AS 16509'],
+    ].map(([name, hits, pct, meta]) => ({ name, hits, pct, meta }));
+
+    const hits = [
+      ['1 Sep 2026, 09:14:02', '104.47.55.18', R.click, 'Sydney, Australia', 'Microsoft Corporation', 'AS 8075', true, 'https://go.intellectit.com.au/r/9f2a?c=1188'],
+      ['1 Sep 2026, 09:14:01', '104.47.55.11', R.click, 'Sydney, Australia', 'Microsoft Corporation', 'AS 8075', true, 'https://go.intellectit.com.au/r/9f2a?c=1188'],
+      ['1 Sep 2026, 09:13:58', '205.139.110.42', R.open, 'Melbourne, Australia', 'Mimecast Services Ltd', 'AS 12046', true, '—'],
+      ['1 Sep 2026, 09:13:57', '205.139.110.9', R.honey, 'Melbourne, Australia', 'Mimecast Services Ltd', 'AS 12046', true, '/bf/honeypot/7c31e0'],
+      ['1 Sep 2026, 09:13:55', '205.139.111.7', R.click, 'Melbourne, Australia', 'Mimecast Services Ltd', 'AS 12046', true, 'https://go.intellectit.com.au/r/4b81?c=1188'],
+      ['31 Aug 2026, 17:02:44', '52.63.14.201', R.click, 'Sydney, Australia', 'Amazon.com Inc', 'AS 16509', true, 'https://go.intellectit.com.au/r/1d09?c=1188'],
+      ['31 Aug 2026, 17:02:41', '52.63.9.88', R.open, 'Sydney, Australia', 'Amazon.com Inc', 'AS 16509', true, '—'],
+      ['29 Aug 2026, 08:11:03', '203.34.28.7', R.core, 'Brisbane, Australia', 'Telstra Corporation', 'AS 1221', false, 'https://go.intellectit.com.au/r/22f4?c=1188'],
+    ].map(([date, ip, r, location, org, asn, dc, url]) => ({ date, ip, reason: r.label, bg: r.bg, fg: r.fg, location, org, asn, dc, url }));
+
+    const daily = [
+      ['1 Sep 2026', R.click, 84], ['1 Sep 2026', R.open, 41],
+      ['31 Aug 2026', R.click, 77], ['31 Aug 2026', R.honey, 12],
+    ].map(([day, r, count]) => ({ day, reason: r.label, bg: r.bg, fg: r.fg, count }));
+
+    const topContacts = [
+      { name: 'Priya Raman', hits: 211, last: '1 Sep, 09:14' },
+      { name: 'Daniel Okafor', hits: 96, last: '1 Sep, 06:02' },
+      { name: 'Elise Fontaine', hits: 74, last: '31 Aug, 16:02' },
+      { name: 'Tom Whitlock', hits: 61, last: '31 Aug, 09:41' },
+    ];
+
+    const status = [
+      { icon: 'ri-checkbox-circle-line', color: '#24a148', label: 'Capture tables installed', detail: 'botfilter_blocked_hits · botfilter_ip_enrichment', value: 'OK' },
+      { icon: 'ri-error-warning-line', color: '#f1c21b', label: 'GeoLite2-ASN database', detail: 'mautic:botfilter:update-asn-db', value: 'Updated 22 Aug — 9 days ago' },
+      { icon: 'ri-checkbox-circle-line', color: '#24a148', label: 'IP enrichment cache', detail: 'mautic:botfilter:enrich-ips', value: '1,043 IPs enriched' },
+    ];
+
+    return {
+      health, contacts, providers, hits, daily, topContacts, status,
+      burstIps: ips,
+      burstWindow: win,
+      ruleSentence: 'Flag a hit as a scanner when the same email reaches the same contact from ' + ips + ' or more distinct IP addresses within ' + win + ' seconds.',
+    };
+  }
+}
+</script>
+</body>
+</html>
