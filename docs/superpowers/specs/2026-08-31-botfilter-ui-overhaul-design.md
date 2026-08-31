@@ -32,7 +32,18 @@ security (ownership clamping, injection-safety) in the process.
 Four surfaces, all in scope for this initiative:
 
 1. **Admin list page** (`/s/botfilter`, `BotFilterController::indexAction`,
-   `Resources/views/BotFilter/list.html.twig`) — affected-contacts list.
+   `Resources/views/BotFilter/list.html.twig`) — affected-contacts list. **Added during the
+   Claude Design pass (round 3), approved as a spec addition rather than undocumented scope
+   creep** — two new elements on this page, both net-new reads, none touching existing
+   detection/query logic:
+   - **Health strip**: four tiles — protection state (integration published/unpublished, via
+     `ConfigProvider`), honeypot state + allowlist count (`ConfigProvider`), ASN DB freshness
+     (`filemtime()` on the GeoLite2-ASN `.mmdb`), and last-capture timestamp
+     (`MAX(date_captured)` on `botfilter_blocked_hits`, one indexed read). See §5.11.
+   - **Provider rollup**: a ranked bar list of top providers, from
+     `botfilter_blocked_hits` joined to the IP-enrichment cache, grouped by provider,
+     counted, ordered. Install-level "which gateway is inflating my numbers" view, distinct
+     from the drill-down's per-hit Org/Provider column. See §5.12.
 2. **Contact drill-down page** (`/s/botfilter/contact/{leadId}`,
    `BotFilterController::contactAction`, `Resources/views/BotFilter/contact.html.twig`) —
    per-contact bot-hit detail.
@@ -216,6 +227,28 @@ ActivityCalendar's own approach). No `docker-compose.yml` change is needed — t
 directory is already bind-mounted — and `traefik/dynamic/block_sensitive_paths.yml` does not
 block plugin `Assets/` paths (only dotfile-prefixed paths).
 
+**5.11 Health strip data.** All four reads are cheap and additive — no changes to existing
+queries:
+- Protection state + honeypot state + allowlist count: already-injectable `ConfigProvider`,
+  memoised — no new query.
+- ASN DB freshness: `filemtime()` on the GeoLite2-ASN `.mmdb` path already used by
+  `update-asn-db`/`enrich-ips` — filesystem stat, not a query; handle a missing file
+  (freshness "unknown") rather than erroring.
+- Last capture: `SELECT MAX(date_captured) FROM botfilter_blocked_hits` — one indexed read.
+  **Do not fold this into the existing bare `catch (\Throwable $e) {}`** (§5.4 requires that
+  catch start logging, not gain more silent callers) — wrap this new read in its own
+  try/catch that logs and falls back to "unknown" on failure, so a health-strip query problem
+  is never confused with "no bot hits yet."
+
+**5.12 Provider rollup data.** `botfilter_blocked_hits` joined to the IP-enrichment cache
+table, `GROUP BY provider`, `COUNT(*)`, `ORDER BY` count descending, reasonable `LIMIT` (e.g.
+top 5-10). This is an aggregate, install-wide stat, not scoped to a specific contact — it is
+**not** subject to the per-contact ownership clamp (§5.4/IDOR fix) the same way the list/
+drill-down rows are, since it reveals no individual contact identity, only provider names and
+counts. Same SQL-safety bar as §5.4 applies regardless: no interpolated values, bound
+parameters for the `LIMIT` if it ever becomes user-controlled (it isn't, in this design), and
+errors logged rather than swallowed.
+
 ## 6. Process pipeline
 
 Mirrors ActivityCalendar's spec → design → implementation shape, with an explicit deployment
@@ -261,6 +294,9 @@ new translation keys, both of which need a cache/plugin-reload cycle to take eff
   not a superficial reproduction of the visual pattern only).
 - Dashboard widgets respect contact ownership (`$permissions` populated, owner clause on the
   `top.contacts` query) — no PII regression relative to the admin pages' existing protection.
+- Health strip and provider rollup (§3/§5.11/§5.12) use their own error handling, distinct
+  from the existing hit-list catch, and degrade to "unknown"/empty rather than breaking the
+  page if their reads fail.
 - No hardcoded UI strings remain in touched templates or PHP (`DashboardSubscriber.php`,
   `BotFilterController.php` included) — verified with a grep pass for literal English strings
   in the touched files' output paths, not just a visual check.
