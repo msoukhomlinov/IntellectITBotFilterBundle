@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest a change or new feature for IIT Bot Filter.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first, including closed ones.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what stops you today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How the plugin should behave. Include settings, commands or UI changes if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+  - type: input
+    id: mautic-version
+    attributes:
+      label: Mautic version
+      placeholder: "7.2.0"
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Scanner behaviour observed, example traffic patterns, related upstream issues. Redact hostnames, email addresses and IP addresses.
+    validations:
+      required: false

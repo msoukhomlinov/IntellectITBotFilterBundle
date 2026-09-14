@@ -1,0 +1,198 @@
+{% set isIndex = tmpl == 'index' ? true : false %}
+{% set tmpl = 'list' %}
+{% extends isIndex ? '@MauticCore/Default/content.html.twig' : '@MauticCore/Default/raw_output.html.twig' %}
+
+{% set cname = (contact.firstname ~ ' ' ~ contact.lastname)|trim %}
+{% if cname == '' %}
+    {% set cname = contact.email ?: ('mautic.botfilter.list.contact_fallback'|trans({'%id%': contact.id})) %}
+{% endif %}
+{% set initials = ((contact.firstname|first ?: (contact.email|first ?: '?')) ~ (contact.lastname|first ?: ''))|upper %}
+
+{% block headerTitle %}{{ 'mautic.botfilter.header.index'|trans }} — {{ cname }}{% endblock %}
+{% block mauticContent %}botfilter{% endblock %}
+
+{% block content %}
+    {% if isIndex %}
+        {{ includeStylesheet('plugins/IntellectITBotFilterBundle/Assets/css/bot-filter.css') }}
+
+        <div class="botfilter-breadcrumb type-label-01">
+            <a href="{{ path('mautic_botfilter_index') }}" data-toggle="ajax">{{ 'mautic.botfilter.header.index'|trans }}</a>
+            <span>&rsaquo;</span>
+            <span>{{ cname }}</span>
+        </div>
+
+        <div class="panel panel-default botfilter-identity">
+            <div class="botfilter-identity__main">
+                <div class="botfilter-identity__avatar">{{ initials }}</div>
+                <div>
+                    <div class="botfilter-identity__name type-heading-03">{{ cname }}</div>
+                    {% if contact.email %}<div class="botfilter-identity__email type-body-compact-01">{{ contact.email }}</div>{% endif %}
+                    <div class="botfilter-identity__badges">
+                        {% if stats.dominantProvider %}
+                            <span class="botfilter-badge botfilter-badge--gray type-label-01">
+                                {{ 'mautic.botfilter.contact.badge.behind'|trans({'%provider%': stats.dominantProvider}) }}
+                            </span>
+                        {% endif %}
+                        {% if stats.honeypotConfirmed %}
+                            <span class="botfilter-badge botfilter-badge--honeypot type-label-01">
+                                {{ 'mautic.botfilter.contact.badge.honeypot_confirmed'|trans }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="botfilter-identity__stats">
+                <div class="botfilter-identity__stat">
+                    <div class="type-label-01 botfilter-identity__stat-label">{{ 'mautic.botfilter.contact.stat.hits'|trans }}</div>
+                    <div class="type-heading-04 botfilter-num">{{ stats.hits }}</div>
+                </div>
+                <div class="botfilter-identity__stat">
+                    <div class="type-label-01 botfilter-identity__stat-label">{{ 'mautic.botfilter.contact.stat.ips'|trans }}</div>
+                    <div class="type-heading-04 botfilter-num">{{ stats.ips }}</div>
+                </div>
+                <div class="botfilter-identity__stat">
+                    <div class="type-label-01 botfilter-identity__stat-label">{{ 'mautic.botfilter.contact.stat.lastseen'|trans }}</div>
+                    <div class="type-body-compact-01">{{ stats.lastSeen ? dateToFull(stats.lastSeen, 'UTC') : '—' }}</div>
+                </div>
+                <a class="btn btn-default btn-sm" href="{{ path('mautic_contact_action', {objectAction: 'view', objectId: contact.id}) }}" data-toggle="ajax">
+                    {{ 'mautic.botfilter.contact.open_contact'|trans }}
+                </a>
+            </div>
+        </div>
+
+        <div class="panel panel-default botfilter-main">
+            {{- include('@MauticCore/Helper/list_toolbar.html.twig', {
+                'searchValue' : searchValue,
+                'action'      : path('mautic_botfilter_contact', {leadId: contact.id, page: 1}),
+            }) -}}
+            <div class="botfilter-reason-filter">
+                <select
+                    class="form-control not-chosen input-sm"
+                    onchange="Mautic.loadContent('{{ path('mautic_botfilter_contact', {leadId: contact.id, page: 1}) }}?tmpl=list&amp;reason=' + this.value, '', 'POST', '.page-list')"
+                >
+                    <option value=""{% if reason == '' %} selected="selected"{% endif %}>{{ 'mautic.botfilter.contact.reason.all'|trans }}</option>
+                    <option value="burst-open"{% if reason == 'burst-open' %} selected="selected"{% endif %}>{{ 'mautic.botfilter.reason.burst_open'|trans }}</option>
+                    <option value="burst-click"{% if reason == 'burst-click' %} selected="selected"{% endif %}>{{ 'mautic.botfilter.reason.burst_click'|trans }}</option>
+                    <option value="core-3signal"{% if reason == 'core-3signal' %} selected="selected"{% endif %}>{{ 'mautic.botfilter.reason.core_3signal'|trans }}</option>
+                    <option value="honeypot"{% if reason == 'honeypot' %} selected="selected"{% endif %}>{{ 'mautic.botfilter.reason.honeypot'|trans }}</option>
+                </select>
+            </div>
+            <div class="page-list">
+                {{ block('listResults') }}
+            </div>
+        </div>
+    {% else %}
+        {{ block('listResults') }}
+    {% endif %}
+{% endblock %}
+
+{% block listResults %}
+{% if queryFailed %}
+    <div class="alert alert-danger">
+        {{ 'mautic.botfilter.error.query_failed'|trans }}
+    </div>
+{% elseif hits|length > 0 %}
+{# No `page-list` class here — see the same note in list.html.twig: this block is the
+   fragment swapped INTO the outer .page-list wrapper, not another swap target. #}
+<div class="table-responsive panel-collapse pull out">
+    <table class="table table-hover botfilter-table">
+        <thead>
+        <tr>
+            {# baseUrl is required here: without it, core's JS falls back to
+               window.location.pathname and rewrites the trailing /\d+$/ segment to reset to
+               page 1 — on the canonical /s/botfilter/contact/{leadId} entry URL (no page
+               segment yet), that regex matches the leadId itself, not a page number. #}
+            {{- include('@MauticCore/Helper/tableheader.html.twig', {
+                'sessionVar' : 'botfilter.contact',
+                'orderBy'    : 'date',
+                'text'       : 'mautic.botfilter.contact.thead.date',
+                'order'      : orderBy,
+                'dir'        : orderByDir,
+                'baseUrl'    : path('mautic_botfilter_contact', {leadId: contact.id, page: 1}),
+            }) -}}
+            {{- include('@MauticCore/Helper/tableheader.html.twig', {
+                'sessionVar' : 'botfilter.contact',
+                'orderBy'    : 'ip',
+                'text'       : 'mautic.botfilter.contact.thead.ip',
+                'order'      : orderBy,
+                'dir'        : orderByDir,
+                'baseUrl'    : path('mautic_botfilter_contact', {leadId: contact.id, page: 1}),
+            }) -}}
+            {{- include('@MauticCore/Helper/tableheader.html.twig', {
+                'sessionVar' : 'botfilter.contact',
+                'orderBy'    : 'reason',
+                'text'       : 'mautic.botfilter.contact.thead.reason',
+                'order'      : orderBy,
+                'dir'        : orderByDir,
+                'baseUrl'    : path('mautic_botfilter_contact', {leadId: contact.id, page: 1}),
+            }) -}}
+            <th><span>{{ 'mautic.botfilter.contact.thead.location'|trans }}</span></th>
+            <th><span>{{ 'mautic.botfilter.contact.thead.org'|trans }}</span></th>
+            <th><span>{{ 'mautic.botfilter.contact.thead.url'|trans }}</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set knownReasons = ['burst_open', 'burst_click', 'core_3signal', 'honeypot'] %}
+        {% for h in hits %}
+            {% set reasonKey = h.reason|replace({'-': '_'}) %}
+            {% set location = (h.enrich.city ?? '') ~ ((h.enrich.city ?? '') and (h.enrich.country ?? '') ? ', ' : '') ~ (h.enrich.country ?? '') %}
+            <tr>
+                <td>{{ dateToFull(h.date_hit ?: h.date_captured, 'UTC') }}</td>
+                <td class="botfilter-mono">{{ h.ip }}</td>
+                <td>
+                    {% if reasonKey in knownReasons %}
+                        <span class="botfilter-badge botfilter-badge--{{ reasonKey }} type-label-01">
+                            {{ ('mautic.botfilter.reason.' ~ reasonKey)|trans }}
+                        </span>
+                    {% else %}
+                        <span class="botfilter-badge botfilter-badge--gray type-label-01">{{ h.reason }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ location != '' ? location : '—' }}</td>
+                <td>
+                    {{ h.enrich.provider ?? (h.enrich.org ?? '—') }}
+                    {# `?? null`, not a bare access: h.enrich is null for any hit recorded with no
+                       IP (ip is nullable, and both writers pass a nullable value through), and
+                       prod runs with strict_variables — a bare h.enrich.asn throws
+                       "Impossible to access an attribute on a null variable", which on the ajax
+                       sort/search/page paths surfaces as a 200 whose payload is the error page.
+                       Every other access in this cell already guards for the same state. #}
+                    {% if h.enrich.asn ?? null %}<div class="botfilter-cell-sub type-label-01">AS{{ h.enrich.asn }}</div>{% endif %}
+                    {% if h.enrich.is_datacenter is defined and h.enrich.is_datacenter %}
+                        <span class="botfilter-badge botfilter-badge--datacenter">
+                            <i class="ri-server-line"></i> {{ 'mautic.botfilter.badge.datacenter'|trans }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="botfilter-url type-label-01">{{ h.url ? h.url : '—' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="panel-footer">
+        {{- include('@MauticCore/Helper/pagination.html.twig', {
+            'totalItems' : totalItems,
+            'page'       : page,
+            'limit'      : limit,
+            'menuLinkId' : 'mautic_botfilter_contact',
+            'baseUrl'    : path('mautic_botfilter_contact', {leadId: contact.id}),
+            'sessionVar' : 'botfilter.contact',
+            'tmpl'       : tmpl,
+        }) -}}
+    </div>
+</div>
+{% elseif searchValue is not empty or reason is not empty %}
+    {# Search/filter matched nothing: core's noresults.html.twig is right here (see docs/ui-spec.md) —
+       the user did something they can undo, unlike a genuinely quiet contact. #}
+    {{- include('@MauticCore/Helper/noresults.html.twig', {
+        header: 'mautic.botfilter.empty.contact.filtered.header',
+        message: 'mautic.botfilter.empty.contact.filtered.message',
+    }) -}}
+{% else %}
+    <div class="botfilter-empty">
+        <i class="ri-radar-line botfilter-empty__icon"></i>
+        <h4 class="type-heading-04">{{ 'mautic.botfilter.empty.contact.header'|trans }}</h4>
+        <p class="type-body-compact-01">{{ 'mautic.botfilter.empty.contact.message'|trans }}</p>
+    </div>
+{% endif %}
+{% endblock %}

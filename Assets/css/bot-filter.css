@@ -1,0 +1,353 @@
+/*
+ * BotFilter plugin styles. Tokens: see docs/ui-spec.md. All values are Mautic 7 core
+ * CSS custom properties (Carbon-derived), verified against the built app.css. Typography
+ * (size/line-height/weight/letter-spacing) comes from core's .type-* utility classes applied
+ * in the Twig markup — this file only adds colour, spacing, and layout on top of them.
+ */
+
+.botfilter-subtitle {
+    color: var(--text-secondary);
+    margin: 0 0 16px;
+}
+
+/* Health strip — 4 tiles, hairline separators via a 1px-gapped grid on a border background */
+.botfilter-health {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-subtle-01);
+    border: 1px solid var(--border-subtle-01);
+    margin-bottom: 16px;
+}
+
+.botfilter-health__tile {
+    background: var(--layer-02);
+    padding: 12px 16px;
+}
+
+.botfilter-health__label {
+    color: var(--text-helper);
+    margin-bottom: 4px;
+}
+
+.botfilter-health__status {
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.botfilter-health__status--info {
+    font-variant-numeric: tabular-nums;
+}
+
+.botfilter-health__meta {
+    color: var(--text-helper);
+    margin-top: 4px;
+}
+
+.botfilter-health__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex: 0 0 auto;
+}
+
+.botfilter-health__dot--ok { background: var(--support-success); }
+.botfilter-health__dot--warn { background: var(--support-warning); }
+.botfilter-health__dot--off { background: var(--border-strong-01); }
+
+/* Two-column body: table panel + provider rollup rail */
+.botfilter-layout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.botfilter-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.botfilter-rail {
+    flex: 0 0 320px;
+}
+
+@media (max-width: 768px) {
+    .botfilter-layout {
+        flex-direction: column;
+    }
+
+    .botfilter-rail {
+        flex-basis: auto;
+        width: 100%;
+    }
+
+    .botfilter-health {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Table */
+.botfilter-table td,
+.botfilter-table th {
+    vertical-align: middle;
+}
+
+.botfilter-num {
+    font-variant-numeric: tabular-nums;
+}
+
+.botfilter-cell-sub {
+    color: var(--text-helper);
+}
+
+.botfilter-scanner {
+    color: var(--text-helper);
+}
+
+/* Reason badges — one shared class, colour per modifier */
+.botfilter-badge {
+    display: inline-block;
+    padding: 0 8px;
+    margin: 0 4px 4px 0;
+}
+
+.botfilter-badge--burst_open {
+    background: var(--label-background-purple);
+    color: var(--label-color-purple);
+}
+
+.botfilter-badge--burst_click {
+    background: var(--label-background-blue);
+    color: var(--label-color-blue);
+}
+
+.botfilter-badge--core_3signal,
+.botfilter-badge--gray {
+    background: var(--label-background-gray);
+    color: var(--label-color-gray);
+}
+
+.botfilter-badge--honeypot {
+    background: var(--label-background-teal);
+    color: var(--label-color-teal);
+}
+
+/* Datacenter badge (drill-down; kept here since it shares the badge base) */
+.botfilter-badge--datacenter {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 0 8px;
+    background: var(--notification-background-warning);
+    border: 1px solid var(--support-warning);
+    color: #684e00;
+}
+
+/* Provider rollup rail */
+.botfilter-providers__row {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border-subtle-01);
+}
+
+.botfilter-providers__row:last-child {
+    border-bottom: none;
+}
+
+.botfilter-providers__label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.botfilter-providers__count {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-helper);
+}
+
+.botfilter-providers__track {
+    background: var(--border-subtle-01);
+    height: 6px;
+}
+
+.botfilter-providers__bar {
+    background: var(--interactive);
+    height: 6px;
+}
+
+.botfilter-providers__bar--muted {
+    background: var(--border-strong-01);
+}
+
+.botfilter-note {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--notification-background-info);
+    border-left: 3px solid var(--support-info);
+    color: var(--text-secondary);
+}
+
+/* Empty state — deliberately not core's noresults.html.twig (its warning styling frames a
+   healthy install as a problem); used only when there have never been any captures. */
+.botfilter-empty {
+    text-align: center;
+    padding: 48px 16px;
+    color: var(--text-secondary);
+}
+
+.botfilter-empty__icon {
+    font-size: 40px;
+    color: var(--border-strong-01);
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* Contact drill-down */
+.botfilter-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-helper);
+    margin-bottom: 12px;
+}
+
+.botfilter-identity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.botfilter-identity__main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.botfilter-identity__avatar {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--label-background-purple);
+    color: var(--label-color-purple);
+    font-weight: 600;
+}
+
+.botfilter-identity__name {
+    color: var(--text-primary);
+}
+
+.botfilter-identity__email {
+    color: var(--text-secondary);
+}
+
+.botfilter-identity__badges {
+    margin-top: 4px;
+    display: flex;
+    gap: 4px;
+}
+
+.botfilter-identity__stats {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.botfilter-identity__stat {
+    text-align: center;
+    min-width: 72px;
+}
+
+.botfilter-identity__stat-label {
+    color: var(--text-helper);
+    margin-bottom: 4px;
+}
+
+.botfilter-reason-filter {
+    padding: 8px 16px;
+    max-width: 220px;
+}
+
+.botfilter-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.botfilter-url {
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-helper);
+}
+
+/* Dashboard number widgets — inner tile content only; core draws the outer
+   card/header/title chrome (DashboardBundle/Resources/views/Widget/detail.html.twig), which
+   is why there is no title here — it would duplicate the core-drawn one. */
+.botfilter-widget-number {
+    text-align: center;
+    padding: 20px;
+}
+
+.botfilter-widget-number__value {
+    color: var(--text-primary);
+}
+
+.botfilter-widget-number__subline {
+    color: var(--text-helper);
+    margin-top: 8px;
+}
+
+/* Settings form — tabbed modal body */
+.botfilter-config-echo {
+    border: 1px dashed var(--border-strong-01);
+    padding: 12px 16px;
+    margin-top: 8px;
+    color: var(--text-secondary);
+}
+
+.botfilter-config-echo strong {
+    color: var(--text-primary);
+}
+
+.botfilter-config-help {
+    color: var(--text-helper);
+    margin: -8px 0 16px;
+}
+
+.botfilter-diagnostics {
+    border: 1px solid var(--border-subtle-01);
+}
+
+.botfilter-diag-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-subtle-01);
+}
+
+.botfilter-diag-row:last-child {
+    border-bottom: none;
+}
+
+.botfilter-diag-row__text {
+    flex: 1 1 auto;
+}
+
+.botfilter-diag-row__value {
+    color: var(--text-secondary);
+    flex: 0 0 auto;
+}

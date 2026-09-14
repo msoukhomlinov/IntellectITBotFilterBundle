@@ -1,0 +1,74 @@
+name: Bug report
+description: Report a defect in IIT Bot Filter.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first. Report security vulnerabilities privately, not here (see SECURITY.md).
+  - type: input
+    id: mautic-version
+    attributes:
+      label: Mautic version
+      placeholder: "7.2.0"
+    validations:
+      required: true
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      description: From Config/config.php or Settings > Plugins.
+      placeholder: "1.10.2"
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      placeholder: "8.3.x"
+    validations:
+      required: true
+  - type: input
+    id: database
+    attributes:
+      label: Database
+      description: Engine and version.
+      placeholder: "MySQL 8.0.x / MariaDB 10.11.x"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant lines from Mautic's log (var/logs) or command output. Redact hostnames, email addresses and IP addresses before posting.
+      render: text
+    validations:
+      required: false
+  - type: checkboxes
+    id: redaction
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have removed hostnames, email addresses, IP addresses and contact data from this report.
+          required: true

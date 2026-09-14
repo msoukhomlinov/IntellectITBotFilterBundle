@@ -1,0 +1,241 @@
+{# Check to see if the entire page should be displayed or just main content (core ajax pattern) #}
+{% set isIndex = tmpl == 'index' ? true : false %}
+{% set tmpl = 'list' %}
+{% extends isIndex ? '@MauticCore/Default/content.html.twig' : '@MauticCore/Default/raw_output.html.twig' %}
+
+{% block headerTitle %}{{ 'mautic.botfilter.header.index'|trans }}{% endblock %}
+{% block mauticContent %}botfilter{% endblock %}
+
+{% block content %}
+    {% if isIndex %}
+        {{ includeStylesheet('plugins/IntellectITBotFilterBundle/Assets/css/bot-filter.css') }}
+
+        <p class="botfilter-subtitle type-body-compact-01">{{ 'mautic.botfilter.list.description'|trans }}</p>
+
+        {# Health strip — install-level status, not affected by page/sort/search, so it lives
+           outside the .page-list ajax-swap target and is not re-rendered on those actions. #}
+        <div class="botfilter-health">
+            <div class="botfilter-health__tile">
+                <div class="botfilter-health__label type-label-01">{{ 'mautic.botfilter.health.protection'|trans }}</div>
+                <div class="botfilter-health__status type-heading-03">
+                    <span class="botfilter-health__dot botfilter-health__dot--{{ health.protection ? 'ok' : 'off' }}"></span>
+                    {{ (health.protection ? 'mautic.botfilter.health.value.active' : 'mautic.botfilter.health.value.inactive')|trans }}
+                </div>
+            </div>
+            <div class="botfilter-health__tile">
+                <div class="botfilter-health__label type-label-01">{{ 'mautic.botfilter.health.honeypot'|trans }}</div>
+                <div class="botfilter-health__status type-heading-03">
+                    <span class="botfilter-health__dot botfilter-health__dot--{{ health.honeypot ? 'ok' : 'off' }}"></span>
+                    {{ (health.honeypot ? 'mautic.botfilter.health.value.on' : 'mautic.botfilter.health.value.off')|trans }}
+                </div>
+                {% if health.honeypot %}
+                    <div class="botfilter-health__meta type-label-01">
+                        {# An empty allowlist means EVERY email is honeypotted, not none
+                           (HoneypotInjectionSubscriber::emailAllowed(): '' === $csv → true, and
+                           the setting's own help text says "Leave blank to honeypot every
+                           email"). Rendering "0 allowed" for the default configuration stated
+                           the exact inverse of the truth, on the one tile where a misread has a
+                           deliverability consequence. #}
+                        {{ 'mautic.botfilter.health.allowlist_count'|trans({'%count%': health.allowlistCount}) }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="botfilter-health__tile">
+                <div class="botfilter-health__label type-label-01">{{ 'mautic.botfilter.health.asndb'|trans }}</div>
+                <div class="botfilter-health__status type-heading-03">
+                    {% if not health.asnExists %}
+                        <span class="botfilter-health__dot botfilter-health__dot--off"></span>
+                        {{ 'mautic.botfilter.health.value.missing'|trans }}
+                    {% elseif health.asnAgeSeconds is null %}
+                        {# File exists but filemtime() failed — distinct from "missing" and from a known-stale age. #}
+                        <span class="botfilter-health__dot botfilter-health__dot--off"></span>
+                        {{ 'mautic.botfilter.health.value.unknown'|trans }}
+                    {% elseif health.asnStale %}
+                        <span class="botfilter-health__dot botfilter-health__dot--warn"></span>
+                        {{ 'mautic.botfilter.health.value.stale'|trans }}
+                    {% else %}
+                        <span class="botfilter-health__dot botfilter-health__dot--ok"></span>
+                        {{ 'mautic.botfilter.health.value.fresh'|trans }}
+                    {% endif %}
+                </div>
+                {% if health.asnAgeSeconds is not null %}
+                    <div class="botfilter-health__meta type-label-01">
+                        {{ 'mautic.botfilter.health.asndb.age'|trans({'%count%': (health.asnAgeSeconds / 86400)|round(0, 'floor')}) }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="botfilter-health__tile">
+                <div class="botfilter-health__label type-label-01">{{ 'mautic.botfilter.health.lastcapture'|trans }}</div>
+                <div class="botfilter-health__status botfilter-health__status--info type-body-compact-01">
+                    {% if health.lastCapture %}
+                        {{ dateToFull(health.lastCapture, 'UTC') }}
+                    {% else %}
+                        {{ 'mautic.botfilter.health.value.unknown'|trans }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="botfilter-layout">
+            <div class="botfilter-main panel panel-default">
+                {{- include('@MauticCore/Helper/list_toolbar.html.twig', {
+                    'searchValue' : searchValue,
+                    'action'      : path('mautic_botfilter_index'),
+                }) -}}
+                <div class="page-list">
+                    {{ block('listResults') }}
+                </div>
+            </div>
+            {# Like the health strip, the rail sits OUTSIDE the .page-list ajax-swap target, so
+               everything in it must be install-wide: a search-scoped value here could never be
+               refreshed by a live search and would sit stale beside the new results.
+               fetchProviderRollup() therefore ignores the search term by design. #}
+            <aside class="botfilter-rail">
+                {% if providerRollup.top|length > 0 or providerRollup.unclassified > 0 %}
+                    <div class="panel panel-default botfilter-providers">
+                        <div class="panel-heading type-heading-compact-01">{{ 'mautic.botfilter.list.providers.header'|trans }}</div>
+                        <div class="panel-body pa-0">
+                            {% for p in providerRollup.top %}
+                                <div class="botfilter-providers__row">
+                                    <div class="botfilter-providers__label type-body-compact-01">
+                                        <span>{{ p.provider }}</span>
+                                        <span class="botfilter-providers__count">{{ p.count }}</span>
+                                    </div>
+                                    <div class="botfilter-providers__track">
+                                        <div class="botfilter-providers__bar" style="width: {{ providerRollup.max > 0 ? (p.count / providerRollup.max * 100)|round(0) : 0 }}%"></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            {% if providerRollup.unclassified > 0 %}
+                                <div class="botfilter-providers__row">
+                                    <div class="botfilter-providers__label type-body-compact-01">
+                                        <span>{{ 'mautic.botfilter.list.providers.unclassified'|trans }}</span>
+                                        <span class="botfilter-providers__count">{{ providerRollup.unclassified }}</span>
+                                    </div>
+                                    <div class="botfilter-providers__track">
+                                        <div class="botfilter-providers__bar botfilter-providers__bar--muted" style="width: {{ providerRollup.max > 0 ? (providerRollup.unclassified / providerRollup.max * 100)|round(0) : 0 }}%"></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                {# Persistent capture caveat — shown regardless of whether the rollup has data,
+                   so the count is never read as "all bot traffic" (see docs/ui-spec.md). #}
+                <div class="botfilter-note type-label-01">
+                    <i class="ri-information-line"></i>
+                    {{ 'mautic.botfilter.list.capture_caveat'|trans }}
+                </div>
+            </aside>
+        </div>
+    {% else %}
+        {{ block('listResults') }}
+    {% endif %}
+{% endblock %}
+
+{% block listResults %}
+{% if queryFailed %}
+    {# Distinct from the "no captures yet" empty state (see docs/ui-spec.md) — a broken query must
+       never render indistinguishably from a healthy, quiet install. #}
+    <div class="alert alert-danger">
+        {{ 'mautic.botfilter.error.query_failed'|trans }}
+    </div>
+{% elseif rows|length > 0 %}
+{# No `page-list` class here: this block IS the ajax fragment swapped INTO the outer
+   .page-list wrapper, so repeating the class nests a second element matching the swap
+   target. Core's own list templates put the class on the wrapper only
+   (@MauticEmail/Email/list.html.twig vs _list.html.twig). #}
+<div class="table-responsive panel-collapse pull out">
+    <table class="table table-hover botfilter-table">
+        <thead>
+        <tr>
+            {{- include('@MauticCore/Helper/tableheader.html.twig', {
+                'sessionVar' : 'botfilter',
+                'orderBy'    : 'contact',
+                'text'       : 'mautic.botfilter.list.thead.contact',
+                'order'      : orderBy,
+                'dir'        : orderByDir,
+            }) -}}
+            {{- include('@MauticCore/Helper/tableheader.html.twig', {
+                'sessionVar' : 'botfilter',
+                'orderBy'    : 'hits',
+                'text'       : 'mautic.botfilter.list.thead.hits',
+                'order'      : orderBy,
+                'dir'        : orderByDir,
+            }) -}}
+            {{- include('@MauticCore/Helper/tableheader.html.twig', {
+                'sessionVar' : 'botfilter',
+                'orderBy'    : 'ips',
+                'text'       : 'mautic.botfilter.list.thead.ips',
+                'order'      : orderBy,
+                'dir'        : orderByDir,
+            }) -}}
+            <th><span>{{ 'mautic.botfilter.list.thead.reasons'|trans }}</span></th>
+            <th><span>{{ 'mautic.botfilter.list.thead.scanner'|trans }}</span></th>
+            {{- include('@MauticCore/Helper/tableheader.html.twig', {
+                'sessionVar' : 'botfilter',
+                'orderBy'    : 'lastseen',
+                'text'       : 'mautic.botfilter.list.thead.lastseen',
+                'order'      : orderBy,
+                'dir'        : orderByDir,
+            }) -}}
+        </tr>
+        </thead>
+        <tbody>
+        {% set knownReasons = ['burst_open', 'burst_click', 'core_3signal', 'honeypot'] %}
+        {% for r in rows %}
+            {% set name = (r.firstname ~ ' ' ~ r.lastname)|trim %}
+            {% if name == '' %}
+                {% set name = r.email ?: ('mautic.botfilter.list.contact_fallback'|trans({'%id%': r.lead_id})) %}
+            {% endif %}
+            <tr>
+                <td>
+                    <a href="{{ path('mautic_botfilter_contact', {leadId: r.lead_id}) }}" data-toggle="ajax">{{ name }}</a>
+                    {% if r.email %}<div class="botfilter-cell-sub type-label-01">{{ r.email }}</div>{% endif %}
+                </td>
+                <td class="botfilter-num">{{ r.hits }}</td>
+                <td class="botfilter-num">{{ r.ips }}</td>
+                <td>
+                    {% for reason in r.reasons %}
+                        {% set reasonKey = reason|replace({'-': '_'}) %}
+                        {% if reasonKey in knownReasons %}
+                            <span class="botfilter-badge botfilter-badge--{{ reasonKey }} type-label-01">
+                                {{ ('mautic.botfilter.reason.' ~ reasonKey)|trans }}
+                            </span>
+                        {% else %}
+                            {# Forward-safe fallback for a reason code not yet known to this UI — gray
+                               modifier with the raw code as text (see docs/ui-spec.md), never an untranslated key. #}
+                            <span class="botfilter-badge botfilter-badge--gray type-label-01">{{ reason }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td class="botfilter-scanner type-label-01">{{ r.top_provider ?: '—' }}</td>
+                <td>{{ r.last ? dateToFull(r.last, 'UTC') : '—' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="panel-footer">
+        {{- include('@MauticCore/Helper/pagination.html.twig', {
+            'totalItems' : totalItems,
+            'page'       : page,
+            'limit'      : limit,
+            'menuLinkId' : 'mautic_botfilter_index',
+            'baseUrl'    : path('mautic_botfilter_index'),
+            'sessionVar' : 'botfilter',
+            'tmpl'       : tmpl,
+        }) -}}
+    </div>
+</div>
+{% else %}
+    {% if searchValue is not empty %}
+        {{- include('@MauticCore/Helper/noresults.html.twig') -}}
+    {% else %}
+        <div class="botfilter-empty">
+            <i class="ri-radar-line botfilter-empty__icon"></i>
+            <h4 class="type-heading-04">{{ 'mautic.botfilter.empty.header'|trans }}</h4>
+            <p class="type-body-compact-01">{{ 'mautic.botfilter.empty.message'|trans }}</p>
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

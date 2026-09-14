@@ -1,0 +1,98 @@
+{#
+  Custom form template (Integration::getFormTemplate()) — core's default
+  @MauticPlugin/Integration/form.html.twig only supports its own fixed tab set
+  (Details/Features/Field Mapping), with no mechanism for arbitrary tab names. This gives us
+  three named tabs (see docs/ui-spec.md): Detection / Honeypot / Diagnostics.
+
+  Variables (same contract PluginController::editAction() always passes, regardless of
+  which template is in use): form, description, formSettings, formNotes, activeTab,
+  formThemes, integrationObject is NOT passed — getDiagnostics() data is threaded through
+  formNotes.custom instead (see IntellectITBotFilterIntegration::getFormNotes()).
+#}
+{%- form_theme form with formThemes -%}
+
+{{ includeStylesheet('plugins/IntellectITBotFilterBundle/Assets/css/bot-filter.css') }}
+
+{% if description is not empty %}
+    <div class="alert alert-info">{{ description|purify }}</div>
+{% endif %}
+
+{% set activeTab = activeTab|default('details-container') %}
+<ul class="nav nav-tabs nav-tabs-line">
+    <li class="{% if activeTab in ['details-container', 'botfilter-detection-container'] %}active{% endif %}" id="botfilter-detection-tab">
+        <a href="#botfilter-detection-container" role="tab" data-toggle="tab">{{ 'mautic.botfilter.config.tab.detection'|trans }}</a>
+    </li>
+    <li id="botfilter-honeypot-tab">
+        <a href="#botfilter-honeypot-container" role="tab" data-toggle="tab">{{ 'mautic.botfilter.config.tab.honeypot'|trans }}</a>
+    </li>
+    <li id="botfilter-diagnostics-tab">
+        <a href="#botfilter-diagnostics-container" role="tab" data-toggle="tab">{{ 'mautic.botfilter.config.tab.diagnostics'|trans }}</a>
+    </li>
+</ul>
+
+{{- form_start(form) -}}
+<div class="tab-content pa-md">
+    <div class="tab-pane fade {% if activeTab in ['details-container', 'botfilter-detection-container'] %}in active{% endif %} bdr-w-0" id="botfilter-detection-container">
+        {{- form_row(form.isPublished) -}}
+
+        {% if formNotes.features is defined %}
+            {# 'default' is not a real alert modifier in core's built CSS (only
+               danger/info/success/warning/primary/secondary/tertiary exist) — the
+               unpublished state would render as a flat, unstyled, icon-less box. #}
+            <div class="alert alert-{{ formNotes.features.type == 'default' ? 'secondary' : formNotes.features.type }}">{{ formNotes.features.note|purify }}</div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-sm-6">{{ form_row(form.featureSettings.max_distinct_ips) }}</div>
+            <div class="col-sm-6">{{ form_row(form.featureSettings.window_seconds) }}</div>
+        </div>
+
+        {# |e on both substitutions: Symfony's translator does plain string substitution with
+           no escaping, and |raw below disables autoescape on the whole result (needed since
+           the translation value itself contains real <strong> markup) — on a validation-
+           failure re-render vars.value is the raw SUBMITTED string, not the numeric config,
+           so an unescaped value here is a live (if low-severity, admin-only) XSS path. #}
+        {% set ips = form.featureSettings.max_distinct_ips.vars.value|default(3) %}
+        {% set window = form.featureSettings.window_seconds.vars.value|default(30) %}
+        <div class="botfilter-config-echo type-body-compact-01">
+            {{- 'mautic.botfilter.config.burst.sentence'|trans({'%ips%': ips|e, '%window%': window|e})|raw -}}
+        </div>
+    </div>
+
+    <div class="tab-pane fade bdr-w-0" id="botfilter-honeypot-container">
+        {{- form_row(form.featureSettings.honeypot_enabled) -}}
+        <p class="botfilter-config-help type-label-01">{{ 'mautic.botfilter.config.honeypot.description'|trans }}</p>
+
+        {{- form_row(form.featureSettings.honeypot_email_ids) -}}
+
+        <div class="alert alert-warning">
+            <i class="ri-alert-line"></i> {{ 'mautic.botfilter.config.honeypot.warning'|trans }}
+        </div>
+    </div>
+
+    <div class="tab-pane fade bdr-w-0" id="botfilter-diagnostics-container">
+        {# |raw, not |purify like core's default template uses for this same section:
+           HTMLPurifier would strip the BEM classes (botfilter-diag-row, etc.) this markup
+           depends on for its layout. Safe here because renderDiagnosticsHtml() escapes
+           every value it interpolates itself — this is a deliberate deviation from core's
+           convention, not an oversight. #}
+        {% if formNotes.custom is defined and formNotes.custom is string %}
+            {{ formNotes.custom|raw }}
+        {% endif %}
+    </div>
+</div>
+
+{# Suppress core's field-mapping block: FeatureSettingsType always adds a leadFields child
+   (FeatureSettingsType.php PRE_SET_DATA, unconditional) even though this integration has no
+   integration fields to map. Core's own default template calls setRendered() on exactly
+   these children when there's nothing to show (form.html.twig:20,30,38-39) — without the
+   same calls here, form_end()'s form_rest() renders that whole block, with its own
+   irrelevant instructional copy, after </div> and outside our tabs entirely. #}
+{% if form.featureSettings is defined %}
+    {% if form.featureSettings.leadFields is defined %}{% do form.featureSettings.leadFields.setRendered() %}{% endif %}
+    {% if form.featureSettings.companyFields is defined %}{% do form.featureSettings.companyFields.setRendered() %}{% endif %}
+    {% do form.featureSettings.setRendered() %}
+{% endif %}
+{% if form.apiKeys is defined %}{% do form.apiKeys.setRendered() %}{% endif %}
+
+{{ form_end(form) }}

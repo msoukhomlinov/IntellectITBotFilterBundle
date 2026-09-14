@@ -1,0 +1,8 @@
+{{ includeStylesheet('plugins/IntellectITBotFilterBundle/Assets/css/bot-filter.css') }}
+<div class="botfilter-widget-number">
+    <div class="botfilter-widget-number__value type-heading-06 botfilter-num">{{ value }}</div>
+    {# default('') guards against strict_variables: a future/rolled-back templateData shape
+       without 'subline' would otherwise throw a RuntimeError that takes out the whole
+       dashboard page (detail.html.twig includes this with error propagation on). #}
+    <div class="botfilter-widget-number__subline type-label-01">{{ subline|default('')|trans }}</div>
+</div>

@@ -1,0 +1,26 @@
+/vendor/
+/var/
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets / environment
+.env*
+!.env.dist
+!.env.example
+*.pem
+*.key
+
+# Data and dumps
+*.mmdb
+*.tar.gz
+*.sql
+*.sqlite
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/
+
+# Composer
+composer.lock

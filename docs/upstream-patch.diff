@@ -1,0 +1,113 @@
+diff --git a/app/bundles/EmailBundle/Config/config.php b/app/bundles/EmailBundle/Config/config.php
+--- a/app/bundles/EmailBundle/Config/config.php
++++ b/app/bundles/EmailBundle/Config/config.php
+@@ -211,6 +211,8 @@ return [
+             'LinkedInBot/1.0 (compatible; Mozilla/5.0; Jakarta Commons-HttpClient/3.1 +http://www.linkedin.com)',
+         ],
+         'bot_helper_blocked_ip_addresses'                                   => [],
++        'bot_helper_burst_max_distinct_ips'                                 => 0, // 0 = disabled
++        'bot_helper_burst_window_seconds'                                   => 30, // seconds
+         'smime_signing_enabled'                                             => false,
+         'smime_certificates_path'                                           => '%kernel.project_dir%/var/smime_certificates',
+     ],
+diff --git a/app/bundles/EmailBundle/Helper/BotRatioHelper.php b/app/bundles/EmailBundle/Helper/BotRatioHelper.php
+--- a/app/bundles/EmailBundle/Helper/BotRatioHelper.php
++++ b/app/bundles/EmailBundle/Helper/BotRatioHelper.php
+@@ -4,6 +4,7 @@ declare(strict_types=1);
+ 
+ namespace Mautic\EmailBundle\Helper;
+ 
++use Doctrine\DBAL\Connection;
+ use Mautic\CoreBundle\Entity\IpAddress;
+ use Mautic\EmailBundle\Entity\Stat;
+ use Mautic\LeadBundle\Tracker\Factory\DeviceDetectorFactory\DeviceDetectorFactoryInterface;
+@@ -29,6 +30,14 @@ class BotRatioHelper
+ 
+         #[Autowire(env: 'json:MAUTIC_BOT_HELPER_BLOCKED_IP_ADDRESSES')]
+         private readonly array $blockedIPAddresses = [],
++
++        private readonly ?Connection $connection = null,
++
++        #[Autowire(env: 'int:MAUTIC_BOT_HELPER_BURST_MAX_DISTINCT_IPS')]
++        private readonly int $burstMaxDistinctIps = 0,
++
++        #[Autowire(env: 'int:MAUTIC_BOT_HELPER_BURST_WINDOW_SECONDS')]
++        private readonly int $burstWindowSeconds = 30,
+     ) {
+     }
+ 
+@@ -38,6 +47,10 @@ class BotRatioHelper
+         IpAddress $ipAddress,
+         string $userAgent,
+     ): bool {
++        if ($this->isBurstHit($emailStat, $emailHitDateTime)) {
++            return true;
++        }
++
+         $totalPoints = (int) $this->isUnderTimeThreshold($emailStat, $emailHitDateTime) +
+             (int) $this->isIpInIgnoreList($ipAddress) +
+             (int) $this->isUserAgentInIgnoreList($userAgent);
+@@ -45,6 +58,63 @@ class BotRatioHelper
+         return $totalPoints / 3 >= $this->botRatioThreshold;
+     }
+ 
++    /**
++     * List-free burst signal: a cloud link scanner fetches one message from several
++     * distinct IP addresses within seconds. Disabled unless burstMaxDistinctIps >= 2.
++     */
++    private function isBurstHit(Stat $emailStat, \DateTimeInterface $emailHitDateTime): bool
++    {
++        if (null === $this->connection || $this->burstMaxDistinctIps < 2 || $this->burstWindowSeconds < 1) {
++            return false;
++        }
++
++        // page_hits.date_hit and email_stats_devices.date_opened are stored in UTC.
++        $since = (new \DateTimeImmutable('@'.($emailHitDateTime->getTimestamp() - $this->burstWindowSeconds)))
++            ->format('Y-m-d H:i:s');
++
++        return $this->countClickIps($emailStat, $since) >= $this->burstMaxDistinctIps
++            || $this->countOpenIps($emailStat, $since) >= $this->burstMaxDistinctIps;
++    }
++
++    private function countClickIps(Stat $emailStat, string $since): int
++    {
++        $emailId = $emailStat->getEmail()?->getId();
++        $leadId  = $emailStat->getLead()?->getId();
++
++        if (null === $emailId || null === $leadId) {
++            return 0;
++        }
++
++        try {
++            return (int) $this->connection->fetchOne(
++                'SELECT COUNT(DISTINCT ph.ip_id) FROM '.MAUTIC_TABLE_PREFIX.'page_hits ph
++                 WHERE ph.email_id = :emailId AND ph.lead_id = :leadId AND ph.date_hit >= :since',
++                ['emailId' => $emailId, 'leadId' => $leadId, 'since' => $since]
++            );
++        } catch (\Throwable) {
++            return 0;
++        }
++    }
++
++    private function countOpenIps(Stat $emailStat, string $since): int
++    {
++        $statId = $emailStat->getId();
++
++        if (null === $statId) {
++            return 0;
++        }
++
++        try {
++            return (int) $this->connection->fetchOne(
++                'SELECT COUNT(DISTINCT d.ip_id) FROM '.MAUTIC_TABLE_PREFIX.'email_stats_devices d
++                 WHERE d.stat_id = :statId AND d.date_opened >= :since',
++                ['statId' => $statId, 'since' => $since]
++            );
++        } catch (\Throwable) {
++            return 0;
++        }
++    }
++
+     private function isBotByMatomoDetector(string $userAgent): bool
+     {
+         $deviceDetector = $this->deviceDetectorFactory->create($userAgent);

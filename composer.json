@@ -1,0 +1,33 @@
+{
+    "name": "msoukhomlinov/intellectit-bot-filter-bundle",
+    "type": "mautic-plugin",
+    "description": "Mautic 7.x plugin that filters email-security link scanners (SafeLinks, Mimecast, Proofpoint) from open/click stats using distinct-IP burst detection and an optional honeypot link, with ASN-based scanner attribution",
+    "license": "GPL-3.0-or-later",
+    "keywords": [
+        "mautic",
+        "mautic-plugin",
+        "bot-detection",
+        "email-security",
+        "safelinks"
+    ],
+    "authors": [
+        {
+            "name": "Max Soukhomlinov",
+            "homepage": "https://github.com/msoukhomlinov",
+            "role": "Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/msoukhomlinov/IntellectITBotFilterBundle/issues",
+        "source": "https://github.com/msoukhomlinov/IntellectITBotFilterBundle"
+    },
+    "require": {
+        "php": "~8.2",
+        "ext-mbstring": "*",
+        "ext-phar": "*",
+        "mautic/core-lib": "^7.0"
+    },
+    "extra": {
+        "install-directory-name": "IntellectITBotFilterBundle"
+    }
+}
