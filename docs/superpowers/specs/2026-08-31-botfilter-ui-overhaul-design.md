@@ -14,7 +14,7 @@ design pass: the admin list/drill-down pages are raw Bootstrap tables with inlin
 there is no dedicated `Assets/css`/`Assets/js`, no shared design tokens, and no
 pagination/sort/search on either list-shaped view.
 
-By contrast, IntellectITActivityCalendarBundle (v1.0.2) went through a deliberate three-stage
+By contrast, a sibling bundle (v1.0.2) went through a deliberate three-stage
 pipeline before implementation: a functional spec, a Claude Design visual pass (a committed
 `.dc.html` canvas plus a fully worked `docs/ui-spec.md` covering colour tokens, spacing/type
 scale, and per-component states), then implementation aligned to that design. That pipeline is
@@ -23,7 +23,7 @@ pipeline.
 
 ## 2. Goal
 
-Bring BotFilter's UI/UX to the same quality bar as ActivityCalendar, across all four of its
+Bring BotFilter's UI/UX to the same quality bar as the sibling bundle, across all four of its
 user-facing surfaces, without regressing its backend robustness — and without regressing
 security (ownership clamping, injection-safety) in the process.
 
@@ -110,9 +110,9 @@ other.
 - No changes to the existing admin-page (list/drill-down) ownership-clamp *logic* — it's
   correct today; the redesign must preserve it exactly. (Widget permissions, unlike the admin
   pages, currently have no such logic and must gain it — see Scope — in.)
-- Full i18n audit of *other* plugins (ActivityCalendar has the same gap) — tracked as a
+- Full i18n audit of *other* plugins (the sibling bundle has the same gap) — tracked as a
   separate future concern, not part of this initiative.
-- Any third-party JS/CSS framework beyond what Mautic core already ships (ActivityCalendar
+- Any third-party JS/CSS framework beyond what Mautic core already ships (the sibling bundle
   chose custom Twig+CSS over a library; default to the same unless a surface genuinely needs
   more).
 - Per-contact BotFilter signal on the core contact detail page (`getContactTimelineLink()`
@@ -218,12 +218,12 @@ surface and was missing from the original scope.
 design (PR #1 explicitly removed one: "Remove icon from botfilter menu item"). The design
 pass should re-decide this deliberately rather than silently reintroducing an icon.
 
-**5.10 Asset loading.** Follow ActivityCalendar's existing pattern —
+**5.10 Asset loading.** Follow the sibling bundle's existing pattern —
 `{{ includeStylesheet('plugins/IntellectITBotFilterBundle/Assets/css/bot-filter.css') }}`
 inside `{% block content %}`, which core loads asynchronously via `Mautic.loadStylesheet()`
 and survives ajax navigation with no `mautic:assets:generate` step even at `APP_ENV=prod`
 (expect a brief FOUC on first paint of a table-heavy page — acceptable, matches
-ActivityCalendar's own approach). No `docker-compose.yml` change is needed — the plugin
+the sibling bundle's own approach). No `docker-compose.yml` change is needed — the plugin
 directory is already bind-mounted — and `traefik/dynamic/block_sensitive_paths.yml` does not
 block plugin `Assets/` paths (only dotfile-prefixed paths).
 
@@ -251,8 +251,8 @@ errors logged rather than swallowed.
 
 ## 6. Process pipeline
 
-Mirrors ActivityCalendar's spec → design → implementation shape, with an explicit deployment
-step ActivityCalendar didn't need to think about as hard (this plugin adds routes and several
+Mirrors the sibling bundle's spec → design → implementation shape, with an explicit deployment
+step the sibling bundle didn't need to think about as hard (this plugin adds routes and several
 new translation keys, both of which need a cache/plugin-reload cycle to take effect):
 
 1. **This spec** — functional/design-requirements document (this file), including the

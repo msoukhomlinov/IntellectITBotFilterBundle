@@ -200,7 +200,7 @@ table{border-collapse:collapse;width:100%;}
           <div style="width:48px;height:48px;background:#e8daff;color:#6929c4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;">PR</div>
           <div style="display:flex;flex-direction:column;gap:4px;">
             <div style="font-size:20px;line-height:28px;color:#161616;">Priya Raman</div>
-            <div style="font-size:14px;line-height:18px;color:#525252;">priya.raman@northbridge.com.au</div>
+            <div style="font-size:14px;line-height:18px;color:#525252;">priya.raman@example.com</div>
             <div style="display:flex;gap:8px;margin-top:4px;">
               <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;font-size:12px;background:#e8daff;color:#6929c4;">Behind Mimecast</span>
               <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;font-size:12px;background:#9EF0E5;color:#005C59;">Honeypot confirmed</span>
@@ -608,13 +608,13 @@ class Component extends DCLogic {
     ];
 
     const contacts = [
-      ['Priya Raman', 'priya.raman@northbridge.com.au', 211, 27, [R.click, R.open, R.honey], 'Mimecast', '1 Sep 2026, 09:14'],
-      ['Daniel Okafor', 'd.okafor@harbourlaw.com', 96, 19, [R.click, R.open], 'Microsoft ATP', '1 Sep 2026, 06:02'],
+      ['Priya Raman', 'priya.raman@example.com', 211, 27, [R.click, R.open, R.honey], 'Mimecast', '1 Sep 2026, 09:14'],
+      ['Daniel Okafor', 'd.okafor@example.com', 96, 19, [R.click, R.open], 'Microsoft ATP', '1 Sep 2026, 06:02'],
       ['Elise Fontaine', 'elise@meridian-group.fr', 74, 22, [R.click, R.honey], 'Proofpoint', '31 Aug 2026, 16:02'],
       ['Tom Whitlock', 'tom.whitlock@cavendish.co.uk', 61, 14, [R.open], 'Barracuda', '31 Aug 2026, 09:41'],
-      ['Sarah Nguyen', 's.nguyen@apexmedical.com.au', 44, 11, [R.click, R.core], 'Microsoft ATP', '28 Aug 2026, 14:20'],
-      ['Marcus Bell', 'marcus.bell@stonegate.io', 31, 9, [R.click], 'Amazon AWS', '27 Aug 2026, 11:07'],
-      ['Anita Desai', 'anita.desai@kelmore.com', 18, 6, [R.honey], 'Mimecast', '26 Aug 2026, 08:55'],
+      ['Sarah Nguyen', 's.nguyen@example.com', 44, 11, [R.click, R.core], 'Microsoft ATP', '28 Aug 2026, 14:20'],
+      ['Marcus Bell', 'marcus.bell@example.com', 31, 9, [R.click], 'Amazon AWS', '27 Aug 2026, 11:07'],
+      ['Anita Desai', 'anita.desai@example.com', 18, 6, [R.honey], 'Mimecast', '26 Aug 2026, 08:55'],
     ].map(([name, email, hits, ipc, reasons, provider, last]) => ({ name, email, hits, ips: ipc, reasons, provider, last }));
 
     const providers = [
@@ -626,14 +626,14 @@ class Component extends DCLogic {
     ].map(([name, hits, pct, meta]) => ({ name, hits, pct, meta }));
 
     const hits = [
-      ['1 Sep 2026, 09:14:02', '104.47.55.18', R.click, 'Sydney, Australia', 'Microsoft Corporation', 'AS 8075', true, 'https://go.intellectit.com.au/r/9f2a?c=1188'],
-      ['1 Sep 2026, 09:14:01', '104.47.55.11', R.click, 'Sydney, Australia', 'Microsoft Corporation', 'AS 8075', true, 'https://go.intellectit.com.au/r/9f2a?c=1188'],
+      ['1 Sep 2026, 09:14:02', '104.47.55.18', R.click, 'Sydney, Australia', 'Microsoft Corporation', 'AS 8075', true, 'https://go.example.com/r/9f2a?c=1188'],
+      ['1 Sep 2026, 09:14:01', '104.47.55.11', R.click, 'Sydney, Australia', 'Microsoft Corporation', 'AS 8075', true, 'https://go.example.com/r/9f2a?c=1188'],
       ['1 Sep 2026, 09:13:58', '205.139.110.42', R.open, 'Melbourne, Australia', 'Mimecast Services Ltd', 'AS 12046', true, '—'],
       ['1 Sep 2026, 09:13:57', '205.139.110.9', R.honey, 'Melbourne, Australia', 'Mimecast Services Ltd', 'AS 12046', true, '/bf/honeypot/7c31e0'],
-      ['1 Sep 2026, 09:13:55', '205.139.111.7', R.click, 'Melbourne, Australia', 'Mimecast Services Ltd', 'AS 12046', true, 'https://go.intellectit.com.au/r/4b81?c=1188'],
-      ['31 Aug 2026, 17:02:44', '52.63.14.201', R.click, 'Sydney, Australia', 'Amazon.com Inc', 'AS 16509', true, 'https://go.intellectit.com.au/r/1d09?c=1188'],
+      ['1 Sep 2026, 09:13:55', '205.139.111.7', R.click, 'Melbourne, Australia', 'Mimecast Services Ltd', 'AS 12046', true, 'https://go.example.com/r/4b81?c=1188'],
+      ['31 Aug 2026, 17:02:44', '52.63.14.201', R.click, 'Sydney, Australia', 'Amazon.com Inc', 'AS 16509', true, 'https://go.example.com/r/1d09?c=1188'],
       ['31 Aug 2026, 17:02:41', '52.63.9.88', R.open, 'Sydney, Australia', 'Amazon.com Inc', 'AS 16509', true, '—'],
-      ['29 Aug 2026, 08:11:03', '203.34.28.7', R.core, 'Brisbane, Australia', 'Telstra Corporation', 'AS 1221', false, 'https://go.intellectit.com.au/r/22f4?c=1188'],
+      ['29 Aug 2026, 08:11:03', '203.34.28.7', R.core, 'Brisbane, Australia', 'Telstra Corporation', 'AS 1221', false, 'https://go.example.com/r/22f4?c=1188'],
     ].map(([date, ip, r, location, org, asn, dc, url]) => ({ date, ip, reason: r.label, bg: r.bg, fg: r.fg, location, org, asn, dc, url }));
 
     const daily = [
